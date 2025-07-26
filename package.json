@@ -10,9 +10,14 @@
     "relax",
     "video"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlcoholTobaccoCode/npm-package-relax-life.git"
+  },
+  "license": "MIT",
+  "bugs": "https://github.com/AlcoholTobaccoCode/npm-package-relax-life/issues",
   "main": "index.js",
   "type": "module",
-  "license": "MIT",
   "peerDependencies": {
     "vue": "^3.0.0",
     "ant-design-vue": "^4.0.0",
