@@ -1,0 +1,92 @@
+/*
+ * 水墨涟漪效果
+ */
+.ink-ripple-global {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  z-index: 99999;
+  pointer-events: none;
+  will-change: transform, opacity;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.65) 30%,
+      rgba(0, 0, 0, 0.4) 60%,
+      rgba(0, 0, 0, 0.2) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    mix-blend-mode: soft-light;
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform-style: preserve-3d;
+  }
+
+  &::before {
+    animation: ink-ripple-global-main 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    filter: blur(2px);
+  }
+
+  &::after {
+    animation: ink-ripple-global-secondary 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.15s;
+    filter: blur(1px);
+  }
+}
+
+@keyframes ink-ripple-global-main {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  70% {
+    opacity: 0.4;
+  }
+  100% {
+    width: 300vw;
+    height: 300vw;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes ink-ripple-global-secondary {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  80% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 250vw;
+    height: 250vw;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+} 

@@ -1,0 +1,25 @@
+{
+  "name": "relax-life",
+  "version": "1.0.0",
+  "author": "duqings@foxmail.com",
+  "description": "放松一下,劳逸结合",
+  "keywords": [
+    "electron",
+    "life",
+    "vue",
+    "relax",
+    "video"
+  ],
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "ant-design-vue": "^4.0.0",
+    "@ant-design/icons-vue": "^7.0.0"
+  },
+  "files": [
+    "src/",
+    "README.md"
+  ]
+} 
