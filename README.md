@@ -14,7 +14,7 @@
 ## 📦 安装
 
 ```bash
-npm install electron-relax-component
+npm install relax-life
 ```
 
 ## 🚀 快速开始
@@ -24,7 +24,7 @@ npm install electron-relax-component
 在主进程的 `index.js` 中注册 IPC 处理程序：
 
 ```javascript
-import { registerRelaxIpc } from "electron-relax-component";
+import { registerRelaxIpc } from "relax-life";
 
 app.whenReady().then(() => {
   // 注册放松一下的IPC处理程序
@@ -57,7 +57,7 @@ app.whenReady().then(() => {
 </template>
 
 <script setup>
-import { RelaxDrawer, RelaxButton, useRelax } from "electron-relax-component";
+import { RelaxDrawer, RelaxButton, useRelax } from "relax-life";
 
 // 使用组合式函数管理状态
 const { relaxOpen, getRedirectUrlLoading, openRelax } = useRelax();
@@ -75,7 +75,7 @@ const handleRelaxClick = () => {
 
 ```scss
 // 引入水墨涟漪效果样式
-@import "electron-relax-component/src/renderer/styles/inkRipple.scss";
+@import "relax-life/src/renderer/styles/inkRipple.scss";
 ```
 
 ## 📚 API 文档
@@ -163,7 +163,7 @@ registerRelaxIpc({
 
 ```vue
 <script setup>
-import { useRelax } from "electron-relax-component";
+import { useRelax } from "relax-life";
 
 const { relaxOpen, getRedirectUrlLoading, openRelax, closeRelax, setLoading } =
   useRelax();
@@ -189,7 +189,7 @@ const handleLoading = (loading) => {
 
 ```vue
 <script setup>
-import { createInkRipple } from "electron-relax-component";
+import { createInkRipple } from "relax-life";
 
 const handleClick = async () => {
   await createInkRipple();
@@ -201,7 +201,7 @@ const handleClick = async () => {
 ## 📁 文件结构
 
 ```
-electron-relax-component/
+relax-life/
 ├── src/
 │   ├── main/
 │   │   └── relaxManager.js      # 主进程IPC处理
