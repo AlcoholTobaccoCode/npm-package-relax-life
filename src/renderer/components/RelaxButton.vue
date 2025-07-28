@@ -1,7 +1,7 @@
 <template>
 
   <a-tooltip>
-    <template #title>{{ title }}</template>
+    <template #title v-if="tooltipConfig.isShow">{{ title }}</template>
     <div 
       class="relax-life-kit_relax-button" 
       @click="handleRelax"
@@ -39,10 +39,10 @@ const props = defineProps({
     type: Number,
     default: () => 16
   },
-  toolTipConfig: {
+  tooltipConfig: {
     type: Object,
     default: () => ({
-      
+      isShow: true
     })
   }
 });
@@ -80,12 +80,14 @@ const handleRelax = () => {
   align-items: center;
   justify-content: center;
   width: 40px;
+  min-width: fit-content;
   height: 40px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
   font-size: 18px;
   cursor: pointer;
+  padding: 0 8px;
   
   &:hover {
     background-color: rgba(24, 144, 255, 0.1);

@@ -97,6 +97,8 @@ import "relax-life-kit/dist/relax-life-kit.css";
 | getRedirectUrlLoading | Boolean | false                                          | 加载状态          |
 | title                 | String  | "😎 放松一下,劳逸结合"                         | 抽屉标题          |
 | videoApiUrl           | String  | "https://api.yujn.cn/api/zzxjj.php?type=video" | 视频 API 地址     |
+| tooltipConfig         | Object  |                                                | tooltip 配置      |
+| tooltipConfig[isShow] | Boolean | true                                           | 是否显示          |
 
 #### Events
 
@@ -109,11 +111,11 @@ import "relax-life-kit/dist/relax-life-kit.css";
 
 #### Props
 
-| 属性名   | 类型            | 默认值     | 说明         |
-| -------- | --------------- | ---------- | ------------ |
-| loading  | Boolean         | false      | 加载状态     |
-| icon     | String          | '🧘‍♀️'       | 按钮图标     |
-| title    | String          | '放松一下' | 按钮提示文本 |
+| 属性名   | 类型            | 默认值     | 说明          |
+| -------- | --------------- | ---------- | ------------- |
+| loading  | Boolean         | false      | 加载状态      |
+| icon     | String          | '🧘‍♀️'       | 按钮图标/文本 |
+| title    | String          | '放松一下' | 按钮提示文本  |
 | fontSize | [String Number] | icon 大小  |
 
 #### Events
