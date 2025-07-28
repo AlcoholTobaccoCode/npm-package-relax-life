@@ -66,16 +66,23 @@ const { relaxOpen, getRedirectUrlLoading, openRelax } = useRelax();
 const handleRelaxClick = () => {
   openRelax();
 };
+
+// 或者使用 ref 内部方法打开
+
+const relaxDrawerRef = ref(null);
+
+const open = () => {
+  relaxDrawerRef.value?.handleOpenRelax();
+};
 </script>
 ```
 
 ### 3. 样式引入
 
-在你的主样式文件中引入必要的样式：
+在 渲染层 main.js 文件中引入必要的样式：
 
-```scss
-// 引入水墨涟漪效果样式
-@import "relax-life-kit/src/renderer/styles/inkRipple.scss";
+```js
+import "relax-life-kit/dist/relax-life-kit.css";
 ```
 
 ## 📚 API 文档
@@ -102,11 +109,12 @@ const handleRelaxClick = () => {
 
 #### Props
 
-| 属性名  | 类型    | 默认值     | 说明         |
-| ------- | ------- | ---------- | ------------ |
-| loading | Boolean | false      | 加载状态     |
-| icon    | String  | '🧘‍♀️'       | 按钮图标     |
-| title   | String  | '放松一下' | 按钮提示文本 |
+| 属性名   | 类型            | 默认值     | 说明         |
+| -------- | --------------- | ---------- | ------------ |
+| loading  | Boolean         | false      | 加载状态     |
+| icon     | String          | '🧘‍♀️'       | 按钮图标     |
+| title    | String          | '放松一下' | 按钮提示文本 |
+| fontSize | [String Number] | icon 大小  |
 
 #### Events
 

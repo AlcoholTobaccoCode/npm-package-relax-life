@@ -1,0 +1,1 @@
+export { registerRelaxIpc } from './src/main/relaxManager.js'; 

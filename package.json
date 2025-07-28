@@ -1,6 +1,6 @@
 {
   "name": "relax-life-kit",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "duqings@foxmail.com",
   "description": "放松一下,劳逸结合",
   "keywords": [
@@ -16,15 +16,37 @@
   },
   "license": "MIT",
   "bugs": "https://github.com/AlcoholTobaccoCode/npm-package-relax-life/issues",
-  "main": "index.js",
+  "main": "dist/relax-life-kit.umd.js",
+  "module": "dist/relax-life-kit.es.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "peerDependencies": {
     "vue": "^3.0.0",
     "ant-design-vue": "^4.0.0",
     "@ant-design/icons-vue": "^7.0.0"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/relax-life-kit.es.js",
+      "require": "./dist/relax-life-kit.umd.js"
+    },
+    "./main": {
+      "import": "./src/main/relaxManager.js",
+      "require": "./src/main/relaxManager.js"
+    },
+    "./dist/relax-life-kit.css": "./dist/relax-life-kit.css"
+  },
   "files": [
-    "src/",
-    "README.md"
-  ]
-} 
+    "dist",
+    "src/main/relaxManager.js",
+    "main.js"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "sass-embedded": "^1.89.2",
+    "vite": "^7.0.6"
+  }
+}

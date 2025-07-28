@@ -1,0 +1,32 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite/构建产物
+dist/
+*.local
+
+# Mac
+.DS_Store
+
+# VSCode/IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# 生产包不需要的临时/缓存
+*.log
+*.tgz
+
+# Example/demo（如不希望提交演示代码，可取消注释）
+# example/
+
+# 其他
+.env
+.env.*

@@ -17,7 +17,9 @@
             <history-outlined />
           </a-tooltip>
         </div>
+
         <a-divider />
+
         <div class="relax-video">
           <div class="relax-video-content">
             <video
@@ -27,7 +29,6 @@
               muted
               loop
               controls
-              style="width: 100%; height: 90%"
             ></video>
           </div>
           <div class="relax-video-btns">
@@ -40,6 +41,7 @@
             <a-button @click="handleRelaxClose">关闭</a-button>
           </div>
         </div>
+
       </div>
     </a-drawer>
 
@@ -65,11 +67,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { message } from "ant-design-vue";
 import { HistoryOutlined } from "@ant-design/icons-vue";
+import {
+  createInkRipple
+} from '../utils/inkRipple';
 
-// Props
+
 const props = defineProps({
   open: {
     type: Boolean,
@@ -89,13 +94,13 @@ const props = defineProps({
   },
 });
 
-// Emits
 const emit = defineEmits(["update:open", "update:getRedirectUrlLoading"]);
 
 // 响应式数据
 const relaxVideoUrl = ref("");
 const relaxVideoRef = ref(null);
 const relaxHistoryOpen = ref(false);
+const relaxHistoryOpenLoading = ref(false);
 
 // 计算属性
 const relaxOpenComputed = computed({
@@ -168,13 +173,27 @@ const handleRelaxSave = async () => {
 
 // 历史记录
 const handleHistory = async () => {
-  // 触发水墨涟漪效果（如果存在）
-  if (typeof window.createInkRipple === 'function') {
-    await window.createInkRipple();
+  if (relaxHistoryOpenLoading.value) return;
+  // 触发水墨涟漪效果
+  if (typeof createInkRipple === 'function') {
+    relaxHistoryOpenLoading.value = true;
+    const isCrush = Math.random() > 0.3;
+    await createInkRipple(isCrush);
+    relaxHistoryOpenLoading.value = false;
   }
+
   // 等动画结束后再打开 modal
   relaxHistoryOpen.value = true;
 };
+
+watch(
+  () => relaxOpenComputed.value,
+  async newVal => {
+    if (newVal) {
+      relaxVideoUrl.value = await getRedirectUrl();
+    }
+  }
+)
 
 // 暴露方法给父组件
 defineExpose({
@@ -186,7 +205,7 @@ defineExpose({
 .relax-video-container {
   display: flex;
   flex-direction: column;
-  height: 90%;
+  height: 100%;
 }
 
 // 放松一下视频样式
@@ -208,7 +227,7 @@ defineExpose({
 
 .relax-video {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 70px);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -216,6 +235,7 @@ defineExpose({
   .relax-video-content {
     width: 100%;
     height: 90%;
+    flex: 1;
 
     video {
       width: 100%;
