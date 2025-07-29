@@ -63,7 +63,7 @@ app.whenReady().then(() => {
 
 ### 2. 渲染进程使用
 
-在 Vue 组件中使用：
+#### 在 `Electron Vue` 组件中使用：
 
 ```vue
 <template>
@@ -100,6 +100,32 @@ const open = () => {
   relaxDrawerRef.value?.handleOpenRelax();
 };
 </script>
+```
+
+#### 在 `Web Vue`
+
+```vue
+<script setup lang="ts">
+import { RelaxDrawer, RelaxButton, useRelax } from "relax-life-kit";
+
+// 使用组合式函数管理状态
+const { relaxOpen, getRedirectUrlLoading, openRelax } = useRelax();
+</script>
+
+<template>
+  <div>
+    <!-- 触发按钮 -->
+    <relax-button :loading="getRedirectUrlLoading" @click="openRelax" />
+
+    <!-- 放松抽屉 -->
+    <relax-drawer
+      v-model:open="relaxOpen"
+      v-model:get-redirect-url-loading="getRedirectUrlLoading"
+      title="😎 放松一下,劳逸结合"
+      video-api-url="https://api.yujn.cn/api/zzxjj.php?type=video"
+    />
+  </div>
+</template>
 ```
 
 ### 3. 样式引入
