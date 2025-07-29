@@ -1,26 +1,33 @@
 <template>
-
-  <a-tooltip>
-    <template #title v-if="tooltipConfig.isShow">{{ title }}</template>
-    <div 
-      class="relax-life-kit_relax-button" 
-      @click="handleRelax"
-      :title="title"
-      :class="{ loading: loading }"
-      :style="{
-        fontSize: calcFontSize
-      }"
-    >
-      <loading-outlined v-if="loading" />
-      <span v-else>{{ icon }}</span>
-    </div>
-  </a-tooltip>
-
+  <div 
+    class="relax-life-kit_relax-button" 
+    @click="handleRelax"
+    :title="title"
+    :class="{ loading: loading }"
+    :style="{
+      fontSize: calcFontSize
+    }"
+  >
+    <component :is="LoadingOutlined" v-if="loading" />
+    <span v-else>{{ icon }}</span>
+  </div>
 </template>
 
 <script setup>
-import { LoadingOutlined } from '@ant-design/icons-vue';
-import { computed } from 'vue';
+import { computed, h, shallowRef } from 'vue';
+
+// 同步导入 + 降级 fallback
+let LoadingOutlined;
+try {
+  LoadingOutlined = require('@ant-design/icons-vue').LoadingOutlined;
+} catch (e) {
+  LoadingOutlined = {
+    name: 'FallbackLoading',
+    setup() {
+      return () => h('div', { class: 'fallback-loading' }, '⏳');
+    }
+  };
+}
 
 const props = defineProps({
   loading: {
@@ -63,7 +70,6 @@ const calcFontSize = computed(() => {
   } else {
     return '16px';
   }
-
 });
 
 const handleRelax = () => {
@@ -102,6 +108,17 @@ const handleRelax = () => {
     cursor: not-allowed;
     opacity: 0.6;
   }
+}
+
+// 降级加载指示器样式
+.fallback-loading {
+  animation: spin 1s linear infinite;
+  font-size: 14px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 // 暗色主题适配

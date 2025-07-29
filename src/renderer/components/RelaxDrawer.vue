@@ -1,98 +1,128 @@
 <template>
   <div>
     <!-- 放松一下抽屉 -->
-    <a-drawer
-      :width="600"
-      title=""
-      placement="right"
-      :open="relaxOpenComputed"
-      :closable="false"
-      :destroyOnClose="true"
-      @close="handleRelaxClose"
-    >
-      <div class="relax-video-container">
-        <div class="relax-video-title" @click="handleHistory">
-          <a-tooltip title="如果遇到加载不出可以换一个">
-            <span>{{ title }}</span>
-          </a-tooltip>
-          <a-tooltip title="历史记录">
-            <history-outlined />
-          </a-tooltip>
-        </div>
-        <a-divider />
+    <div class="relax-drawer-wrapper">
+      <div
+        class="relax-drawer-overlay"
+        v-if="relaxOpenComputed"
+        @click="handleRelaxClose"
+      ></div>
+      <div class="relax-drawer-content" :class="{ open: relaxOpenComputed }">
+        <div class="relax-video-container">
+          <div class="relax-video-title" @click="handleHistory">
+            <span class="title-text" :title="'如果遇到加载不出可以换一个'">{{
+              title
+            }}</span>
+            <span class="history-icon" title="历史记录">📜</span>
+          </div>
+          <hr class="relax-divider" />
 
-        <div class="relax-video">
-          <div class="relax-video-content">
-            <template v-if="isVideoFile(relaxVideoUrl)">
-              <video
-                ref="relaxVideoRef"
-                :src="relaxVideoUrl"
-                autoplay
-                muted
-                loop
-                controls
-              ></video>
-            </template>
-            <template v-else-if="isImageFile(relaxVideoUrl)">
-              <div class="img">
-                <a-image
+          <div class="relax-video">
+            <div class="relax-video-content">
+              <template v-if="isImageFile(relaxVideoUrl)">
+                <div class="img">
+                  <img
+                    :src="relaxVideoUrl"
+                    alt="放松一下"
+                    @error="handleImageError"
+                  />
+                </div>
+              </template>
+              <template v-else>
+              <!-- <template v-if="isVideoFile(relaxVideoUrl)"> -->
+                <video
+                  ref="relaxVideoRef"
                   :src="relaxVideoUrl"
-                  alt="放松一下"
-                  fit="contain"
-                  :fallback="imgError"
-                />
-              </div>
-            </template>
-            <template v-else>
-              <div style="text-align:center;color:#aaa;">暂不支持的媒体类型</div>
-            </template>
-          </div>
-          <div class="relax-video-btns">
-            <a-button type="primary" @click="handleRelaxChange">换一个</a-button>
-            <a-button
-              type="primary"
-              :loading="getRedirectUrlLoadingComputed"
-              @click="handleRelaxSave"
-            >保存</a-button>
-            <a-button @click="handleRelaxClose">关闭</a-button>
+                  autoplay
+                  muted
+                  loop
+                  controls
+                ></video>
+              </template>
+              <!-- <template v-else>
+                <div style="text-align: center; color: #aaa">
+                  暂不支持的媒体类型
+                </div>
+              </template> -->
+            </div>
+            <div class="relax-video-btns">
+              <button class="relax-btn primary" @click="handleRelaxChange">
+                换一个
+              </button>
+              <button
+                class="relax-btn primary"
+                :class="{ loading: getRedirectUrlLoadingComputed }"
+                @click="handleRelaxSave"
+              >
+                保存
+              </button>
+              <button class="relax-btn" @click="handleRelaxClose">关闭</button>
+            </div>
           </div>
         </div>
-
       </div>
-    </a-drawer>
 
-    <!-- 历史记录弹窗 -->
-    <a-modal
-      v-model:open="relaxHistoryOpen"
-      title="往昔如镜 照影不照形"
-      okText="好的✨"
-      cancelText="再见👋"
-      @ok="relaxHistoryOpen = false"
-      @cancel="relaxHistoryOpen = false"
-    >
-      <p>镜中影可暂观却不可触摸，执着于追溯形骸不如把握当下神韵</p>
-      <p>来路无可眷恋，期待唯有远方</p>
-      <p>你的人生中会有人</p>
-      <p>想要阻止你拖累你</p>
-      <p>但别让他们得逞</p>
-      <p>不要停止奔跑 不要回顾来路</p>
-      <p>值得期待的只有远方</p>
-      <p>👋✨✨✨</p>
-    </a-modal>
+      <!-- 历史记录弹窗 -->
+      <div
+        class="relax-modal-overlay"
+        v-if="relaxHistoryOpen"
+        @click="relaxHistoryOpen = false"
+      >
+        <div class="relax-modal-content" @click.stop>
+          <div class="modal-header">
+            <h3>往昔如镜 照影不照形</h3>
+          </div>
+          <div class="modal-body">
+            <p>镜中影可暂观却不可触摸，执着于追溯形骸不如把握当下神韵</p>
+            <p>来路无可眷恋，期待唯有远方</p>
+            <p>你的人生中会有人</p>
+            <p>想要阻止你拖累你</p>
+            <p>但别让他们得逞</p>
+            <p>不要停止奔跑 不要回顾来路</p>
+            <p>值得期待的只有远方</p>
+            <p>👋✨✨✨</p>
+          </div>
+          <div class="modal-footer">
+            <button class="relax-btn" @click="relaxHistoryOpen = false">
+              再见👋
+            </button>
+            <button class="relax-btn primary" @click="relaxHistoryOpen = false">
+              好的✨
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { message } from "ant-design-vue";
-import { HistoryOutlined } from "@ant-design/icons-vue";
-import {
-  createInkRipple
-} from '../utils/inkRipple';
-import {
-  imgError
-} from '../utils/index';
+import { ref, computed, watch, h } from "vue";
+import { createInkRipple } from "../utils/inkRipple";
+import { imgError } from "../utils/index";
 
+// 同步导入 + 降级 fallback
+let message;
+try {
+  message = require("ant-design-vue").message;
+} catch (e) {
+  message = {
+    success: (msg) => console.log("Success:", msg),
+    error: (msg) => console.error("Error:", msg),
+  };
+}
+
+let HistoryOutlined;
+try {
+  HistoryOutlined = require("@ant-design/icons-vue").HistoryOutlined;
+} catch (e) {
+  HistoryOutlined = {
+    name: "FallbackHistory",
+    setup() {
+      return () => h("span", { class: "fallback-history-icon" }, "📜");
+    },
+  };
+}
 
 const props = defineProps({
   open: {
@@ -117,28 +147,36 @@ const emit = defineEmits(["update:open", "update:getRedirectUrlLoading"]);
 
 const fileType = {
   video: [
-    'mp4',
-    'avi',
-    'mov',
-    'wmv',
-    'flv',
-    'webm',
-    'mkv',
-    'm4v',
-    '3gp',
-    'ogv'
+    "mp4",
+    "avi",
+    "mov",
+    "wmv",
+    "flv",
+    "webm",
+    "mkv",
+    "m4v",
+    "3gp",
+    "ogv",
+    "video"
   ],
   imgs: [
-    'jpg',
-    'jpeg',
-    'png',
-    'gif',
-    'webp',
-    'bmp',
-    'svg',
-    'ico'
-  ]
-}
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "webp",
+    "bmp",
+    "svg",
+    "ico"
+  ],
+};
+
+// 判断是否为 Electron 环境
+const isElectron = ref(!!(
+  window &&
+  window.electron &&
+  window.electron.ipcRenderer
+));
 
 const relaxVideoUrl = ref("");
 const relaxVideoRef = ref(null);
@@ -149,9 +187,9 @@ const relaxHistoryOpenLoading = ref(false);
 const isVideoFile = (url) => {
   if (!url) return false;
   // 移除查询参数
-  const urlWithoutQuery = url.split('?')[0];
+  const urlWithoutQuery = url.split("?")[0];
   // 检查URL中是否包含视频扩展名
-  return fileType.video.some(ext => 
+  return fileType.video.some((ext) =>
     urlWithoutQuery.toLowerCase().includes(`.${ext}`)
   );
 };
@@ -160,9 +198,9 @@ const isVideoFile = (url) => {
 const isImageFile = (url) => {
   if (!url) return false;
   // 移除查询参数
-  const urlWithoutQuery = url.split('?')[0];
+  const urlWithoutQuery = url.split("?")[0];
   // 检查URL中是否包含图片扩展名
-  return fileType.imgs.some(ext => 
+  return fileType.imgs.some((ext) =>
     urlWithoutQuery.toLowerCase().includes(`.${ext}`)
   );
 };
@@ -177,11 +215,20 @@ const getRedirectUrlLoadingComputed = computed({
   set: (value) => emit("update:getRedirectUrlLoading", value),
 });
 
+// 处理图片加载错误
+const handleImageError = (e) => {
+  e.target.src = imgError;
+};
+
 // 获取重定向URL
 const getRedirectUrl = async () => {
   try {
-    const response = await fetch(props.videoApiUrl, { method: "GET" });
-    return response.url;
+    if (isElectron.value) {
+      const response = await fetch(props.videoApiUrl, { method: "GET" });
+      return response.url;
+    } else {
+      return props.videoApiUrl;
+    }
   } catch (err) {
     console.error("fetch error:", err);
     return "";
@@ -220,7 +267,7 @@ const handleRelaxSave = async () => {
     try {
       const urlObj = new URL(url, window.location.origin);
       let pathname = urlObj.pathname;
-      let name = pathname.substring(pathname.lastIndexOf('/') + 1);
+      let name = pathname.substring(pathname.lastIndexOf("/") + 1);
       if (!name || !/\.[a-zA-Z0-9]+$/.test(name)) {
         // 没有扩展名
         name = `relax_${Date.now()}.${defaultExt}`;
@@ -253,20 +300,20 @@ const handleRelaxSave = async () => {
       return;
     }
 
-    // 判断是否为 Electron 环境
-    const isElectron = !!(window && window.electron && window.electron.ipcRenderer);
-
-    if (isElectron) {
+    if (isElectron.value) {
       // Electron 走原有逻辑
       const response = await fetch(realUrl);
       if (!response.ok) throw new Error("下载失败");
       const blob = await response.blob();
       const arrayBuffer = await blob.arrayBuffer();
       // 发送 buffer 给主进程保存
-      const result = await window.electron.ipcRenderer.invoke("save-video-buffer", {
-        buffer: Array.from(new Uint8Array(arrayBuffer)),
-        fileName, // 兼容主进程可选参数
-      });
+      const result = await window.electron.ipcRenderer.invoke(
+        "save-video-buffer",
+        {
+          buffer: Array.from(new Uint8Array(arrayBuffer)),
+          fileName, // 兼容主进程可选参数
+        }
+      );
       if (result.success) {
         message.success("下载成功！");
       } else {
@@ -301,7 +348,7 @@ const handleRelaxSave = async () => {
 const handleHistory = async () => {
   if (relaxHistoryOpenLoading.value) return;
   // 触发水墨涟漪效果
-  if (typeof createInkRipple === 'function') {
+  if (typeof createInkRipple === "function") {
     relaxHistoryOpenLoading.value = true;
     const isCrush = Math.random() > 0.3;
     await createInkRipple(isCrush);
@@ -314,12 +361,12 @@ const handleHistory = async () => {
 
 watch(
   () => relaxOpenComputed.value,
-  async newVal => {
+  async (newVal) => {
     if (newVal) {
       relaxVideoUrl.value = await getRedirectUrl();
     }
   }
-)
+);
 
 // 暴露方法给父组件
 defineExpose({
@@ -328,6 +375,37 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.relax-drawer-wrapper {
+  position: relative;
+}
+
+.relax-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+}
+
+.relax-drawer-content {
+  position: fixed;
+  top: 0;
+  right: -600px;
+  width: 600px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  transition: right 0.3s;
+  z-index: 1000;
+  overflow-y: auto;
+
+  &.open {
+    right: 0;
+  }
+}
+
 .relax-video-container {
   display: flex;
   flex-direction: column;
@@ -342,13 +420,32 @@ defineExpose({
   font-size: 16px;
   font-weight: 500;
   color: #333;
-  padding: 0 16px;
+  padding: 16px;
   cursor: pointer;
   transition: color 0.3s;
 
-  &:hover {
-    color: #1890ff;
+  .title-text {
+    flex: 1;
+
+    &:hover {
+      color: #1890ff;
+    }
   }
+
+  .history-icon {
+    font-size: 18px;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.relax-divider {
+  border: none;
+  border-top: 1px solid #f0f0f0;
+  margin: 0 16px;
 }
 
 .relax-video {
@@ -357,6 +454,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 0 16px 16px;
+  box-sizing: border-box;
 
   .relax-video-content {
     width: 100%;
@@ -374,10 +473,10 @@ defineExpose({
       align-items: center;
       justify-content: center;
 
-      :deep(.ant-image),
-      :deep(.ant-image-img) {
-        width: 100%;
-        height: 100%;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
       }
     }
   }
@@ -389,14 +488,129 @@ defineExpose({
   }
 }
 
+.relax-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 15px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5715;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: rgba(0, 0, 0, 0.85);
+
+  &:hover {
+    border-color: #40a9ff;
+    color: #40a9ff;
+  }
+
+  &:active {
+    border-color: #096dd9;
+    color: #096dd9;
+  }
+
+  &.primary {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+
+    &:hover {
+      background: #40a9ff;
+      border-color: #40a9ff;
+    }
+  }
+
+  &.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.relax-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.relax-modal-content {
+  background: #fff;
+  border-radius: 6px;
+  max-width: 520px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  .modal-header {
+    padding: 16px 24px 0;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .modal-body {
+    padding: 16px 24px;
+
+    p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+  }
+
+  .modal-footer {
+    padding: 0 24px 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}
+
 // 暗色主题适配
 .dark-theme {
+  .relax-drawer-content {
+    background: #1f1f1f;
+    color: #fff;
+  }
+
   .relax-video-title {
     color: #fff;
-    
-    &:hover {
+
+    .title-text:hover {
       color: #40a9ff;
     }
   }
+
+  .relax-divider {
+    border-top-color: #434343;
+  }
+
+  .relax-btn {
+    background: #1f1f1f;
+    border-color: #434343;
+    color: #fff;
+
+    &:hover {
+      border-color: #40a9ff;
+      color: #40a9ff;
+    }
+  }
+
+  .relax-modal-content {
+    background: #1f1f1f;
+    color: #fff;
+  }
 }
-</style> 
+</style>

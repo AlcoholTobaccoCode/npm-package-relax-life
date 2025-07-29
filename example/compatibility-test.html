@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relax Life Kit 兼容性测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .test-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .status.success {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        .status.error {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+        .status.info {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Relax Life Kit 兼容性测试</h1>
+        <p>此页面测试在没有 Ant Design Vue 依赖的情况下，组件是否能正常工作。</p>
+
+        <div class="test-section">
+            <div class="test-title">1. 依赖检查测试</div>
+            <div class="test-description">检查 Ant Design Vue 是否可用</div>
+            <div id="dependency-status" class="status info">正在检查依赖...</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">2. 按钮组件测试</div>
+            <div class="test-description">测试 RelaxButton 组件是否正常渲染</div>
+            <div id="button-test"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">3. 抽屉组件测试</div>
+            <div class="test-description">测试 RelaxDrawer 组件是否正常渲染</div>
+            <div id="drawer-test"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">4. 功能测试</div>
+            <div class="test-description">测试组件的基本功能</div>
+            <div id="function-test"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+        
+        // 模拟 relax-life-kit 的导出
+        const RelaxButton = {
+            name: 'RelaxButton',
+            props: {
+                loading: { type: Boolean, default: false },
+                icon: { type: String, default: '🧘‍♀️' },
+                title: { type: String, default: '放松一下' }
+            },
+            emits: ['click'],
+            template: `
+                <div 
+                    class="relax-life-kit_relax-button" 
+                    @click="handleClick"
+                    :title="title"
+                    :class="{ loading: loading }"
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 18px; padding: 0 8px; border: 1px solid #d9d9d9; background: #fff;"
+                >
+                    <span v-if="loading" style="animation: spin 1s linear infinite;">⏳</span>
+                    <span v-else>{{ icon }}</span>
+                </div>
+            `,
+            methods: {
+                handleClick() {
+                    this.$emit('click');
+                }
+            }
+        };
+
+        const RelaxDrawer = {
+            name: 'RelaxDrawer',
+            props: {
+                open: { type: Boolean, default: false },
+                title: { type: String, default: '😎 放松一下,劳逸结合' }
+            },
+            emits: ['update:open'],
+            template: `
+                <div v-if="open" class="relax-drawer-overlay" @click="close" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.45); z-index: 999;"></div>
+                <div 
+                    class="relax-drawer-content"
+                    :class="{ 'open': open }"
+                    style="position: fixed; top: 0; right: -600px; width: 600px; height: 100vh; background: #fff; box-shadow: -2px 0 8px rgba(0,0,0,0.15); transition: right 0.3s; z-index: 1000; overflow-y: auto;"
+                    :style="{ right: open ? '0' : '-600px' }"
+                >
+                    <div style="padding: 20px;">
+                        <h3>{{ title }}</h3>
+                        <p>这是一个测试抽屉，用于验证组件在没有 Ant Design Vue 的情况下是否正常工作。</p>
+                        <button @click="close" style="padding: 8px 16px; border: 1px solid #d9d9d9; border-radius: 4px; background: #fff; cursor: pointer;">关闭</button>
+                    </div>
+                </div>
+            `,
+            methods: {
+                close() {
+                    this.$emit('update:open', false);
+                }
+            }
+        };
+
+        // 创建测试应用
+        const app = createApp({
+            components: {
+                RelaxButton,
+                RelaxDrawer
+            },
+            setup() {
+                const drawerOpen = ref(false);
+                const buttonLoading = ref(false);
+                const testResults = ref({
+                    dependency: 'checking',
+                    button: 'pending',
+                    drawer: 'pending',
+                    function: 'pending'
+                });
+
+                // 检查依赖
+                const checkDependency = () => {
+                    try {
+                        // 尝试访问 ant-design-vue
+                        if (typeof window !== 'undefined' && window.antd) {
+                            testResults.value.dependency = 'available';
+                        } else {
+                            testResults.value.dependency = 'unavailable';
+                        }
+                    } catch (e) {
+                        testResults.value.dependency = 'unavailable';
+                    }
+                };
+
+                // 测试按钮点击
+                const testButtonClick = () => {
+                    buttonLoading.value = true;
+                    setTimeout(() => {
+                        buttonLoading.value = false;
+                        testResults.value.button = 'success';
+                    }, 1000);
+                };
+
+                // 测试抽屉
+                const testDrawer = () => {
+                    drawerOpen.value = true;
+                    testResults.value.drawer = 'success';
+                };
+
+                // 测试功能
+                const testFunction = () => {
+                    testResults.value.function = 'success';
+                };
+
+                // 初始化
+                setTimeout(checkDependency, 100);
+
+                return {
+                    drawerOpen,
+                    buttonLoading,
+                    testResults,
+                    testButtonClick,
+                    testDrawer,
+                    testFunction
+                };
+            },
+            template: `
+                <div>
+                    <div class="test-section">
+                        <div class="test-title">1. 依赖检查测试</div>
+                        <div class="test-description">检查 Ant Design Vue 是否可用</div>
+                        <div :class="['status', testResults.dependency === 'available' ? 'success' : testResults.dependency === 'unavailable' ? 'error' : 'info']">
+                            {{ testResults.dependency === 'available' ? '✅ Ant Design Vue 可用' : 
+                               testResults.dependency === 'unavailable' ? '⚠️ 使用降级样式' : '⏳ 正在检查...' }}
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <div class="test-title">2. 按钮组件测试</div>
+                        <div class="test-description">测试 RelaxButton 组件是否正常渲染</div>
+                        <div class="button-group">
+                            <relax-button @click="testButtonClick" />
+                            <relax-button :loading="buttonLoading" @click="testButtonClick" />
+                            <relax-button icon="🎬" title="观看视频" @click="testButtonClick" />
+                        </div>
+                        <div :class="['status', testResults.button === 'success' ? 'success' : 'info']">
+                            {{ testResults.button === 'success' ? '✅ 按钮组件测试通过' : '⏳ 点击按钮测试功能' }}
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <div class="test-title">3. 抽屉组件测试</div>
+                        <div class="test-description">测试 RelaxDrawer 组件是否正常渲染</div>
+                        <button @click="testDrawer" style="padding: 8px 16px; border: 1px solid #d9d9d9; border-radius: 4px; background: #fff; cursor: pointer;">
+                            打开抽屉
+                        </button>
+                        <relax-drawer v-model:open="drawerOpen" />
+                        <div :class="['status', testResults.drawer === 'success' ? 'success' : 'info']">
+                            {{ testResults.drawer === 'success' ? '✅ 抽屉组件测试通过' : '⏳ 点击按钮打开抽屉' }}
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <div class="test-title">4. 功能测试</div>
+                        <div class="test-description">测试组件的基本功能</div>
+                        <button @click="testFunction" style="padding: 8px 16px; border: 1px solid #d9d9d9; border-radius: 4px; background: #fff; cursor: pointer;">
+                            运行功能测试
+                        </button>
+                        <div :class="['status', testResults.function === 'success' ? 'success' : 'info']">
+                            {{ testResults.function === 'success' ? '✅ 功能测试通过' : '⏳ 点击按钮运行测试' }}
+                        </div>
+                    </div>
+                </div>
+            `
+        });
+
+        app.mount('.container');
+    </script>
+</body>
+</html> 

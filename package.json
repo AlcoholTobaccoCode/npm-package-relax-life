@@ -1,6 +1,6 @@
 {
   "name": "relax-life-kit",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "author": "duqings@foxmail.com",
   "description": "放松一下,劳逸结合",
   "keywords": [
@@ -21,7 +21,9 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "peerDependencies": {
-    "vue": "^3.0.0",
+    "vue": "^3.0.0"
+  },
+  "optionalDependencies": {
     "ant-design-vue": "^4.0.0",
     "@ant-design/icons-vue": "^7.0.0"
   },

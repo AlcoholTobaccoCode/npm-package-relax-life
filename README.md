@@ -16,8 +16,9 @@
 - 💾 视频下载保存
 - 🎨 水墨涟漪动画效果
 - 📱 响应式设计
-- 🌙 暗色主题支持
+- �� 暗色主题支持
 - ⚙️ 高度可配置
+- 🔧 **Ant Design Vue 可选依赖** - 支持无 Ant Design Vue 的项目
 
 ## 👀 大致效果
 
@@ -30,6 +31,16 @@
 ```bash
 npm install relax-life-kit
 ```
+
+### 可选依赖
+
+如果你想要更好的 UI 体验，可以安装 Ant Design Vue：
+
+```bash
+npm install ant-design-vue @ant-design/icons-vue
+```
+
+**注意**：即使不安装 Ant Design Vue，组件也能正常工作，会自动使用降级样式。
 
 ## 🚀 快速开始
 
@@ -99,6 +110,41 @@ const open = () => {
 import "relax-life-kit/dist/relax-life-kit.css";
 ```
 
+## 🔧 兼容性说明
+
+### 无 Ant Design Vue 依赖
+
+如果你的项目没有安装 Ant Design Vue，组件会自动使用降级方案：
+
+- 使用原生 HTML 元素替代 Ant Design Vue 组件
+- 提供完整的降级样式，保持视觉效果
+- 所有功能正常工作
+
+### 检查依赖可用性
+
+```javascript
+import { checkAntdAvailability } from "relax-life-kit";
+
+// 检查 Ant Design Vue 是否可用
+if (checkAntdAvailability()) {
+  console.log("Ant Design Vue 可用");
+} else {
+  console.log("使用降级样式");
+}
+```
+
+### 手动控制降级
+
+```javascript
+import { createFallbackComponent } from "relax-life-kit";
+
+// 创建降级按钮组件
+const FallbackButton = createFallbackComponent("Button", {
+  type: "primary",
+  loading: false,
+});
+```
+
 ## 📚 API 文档
 
 ### RelaxDrawer 组件
@@ -158,6 +204,15 @@ import "relax-life-kit/dist/relax-life-kit.css";
 | ------------------ | ------ | ---------- | -------------- |
 | options            | Object | {}         | 配置选项       |
 | options.filePrefix | String | '放松一下' | 保存文件的前缀 |
+
+### 兼容性工具函数
+
+| 函数名                  | 说明                         |
+| ----------------------- | ---------------------------- |
+| checkAntdAvailability   | 检查 Ant Design Vue 是否可用 |
+| getAntdComponent        | 获取 Ant Design Vue 组件     |
+| createFallbackComponent | 创建降级组件                 |
+| fallbackStyles          | 降级样式字符串               |
 
 ## 🎨 自定义配置
 
@@ -222,6 +277,23 @@ const handleClick = async () => {
 </script>
 ```
 
+### 兼容性处理
+
+```vue
+<script setup>
+import { checkAntdAvailability, createFallbackComponent } from "relax-life-kit";
+
+// 检查依赖可用性
+const hasAntd = checkAntdAvailability();
+
+// 创建降级组件
+const CustomButton = createFallbackComponent("Button", {
+  type: "primary",
+  size: "large",
+});
+</script>
+```
+
 ## 📁 文件结构
 
 ```
@@ -236,9 +308,11 @@ relax-life-kit/
 │       ├── composables/
 │       │   └── useRelax.js      # 状态管理
 │       ├── utils/
-│       │   └── inkRipple.js     # 水墨涟漪工具
+│       │   ├── inkRipple.js     # 水墨涟漪工具
+│       │   └── compatibility.js # 兼容性工具
 │       └── styles/
-│           └── inkRipple.scss   # 水墨涟漪样式
+│           ├── inkRipple.scss   # 水墨涟漪样式
+│           └── fallback.css     # 降级样式
 ├── index.js                     # 主入口文件
 ├── package.json                 # 包配置
 └── README.md                    # 使用说明
@@ -246,11 +320,13 @@ relax-life-kit/
 
 ## ⚠️ 注意事项
 
-1. **依赖要求**：确保项目中已安装 Vue 3、Ant Design Vue 和相关图标包
-2. **网络连接**：需要网络连接来获取随机视频
-3. **文件权限**：视频保存功能需要用户选择保存目录
-4. **样式依赖**：需要引入相应的 CSS 动画样式
-5. **Electron 版本**：建议使用 Electron 20+ 版本
+1. **依赖要求**：确保项目中已安装 Vue 3
+2. **可选依赖**：Ant Design Vue 和图标包是可选的，不安装也能正常工作
+3. **网络连接**：需要网络连接来获取随机视频
+4. **文件权限**：视频保存功能需要用户选择保存目录
+5. **样式依赖**：需要引入相应的 CSS 动画样式
+6. **Electron 版本**：建议使用 Electron 20+ 版本
+7. **兼容性**：组件会自动检测 Ant Design Vue 是否可用，并提供降级方案
 
 ## 🤝 贡献
 
