@@ -208,30 +208,90 @@ const handleRelaxChange = async () => {
   getRedirectUrlLoadingComputed.value = false;
 };
 
-// 保存视频
+// 保存视频/图片，兼容 Electron、Web、图片
 const handleRelaxSave = async () => {
-  const videoEl = relaxVideoRef.value;
-  if (!videoEl) return;
-  const realUrl = videoEl.currentSrc;
+  let realUrl = "";
+  let fileName = "";
+  let isVideo = isVideoFile(relaxVideoUrl.value);
+  let isImg = isImageFile(relaxVideoUrl.value);
+
+  // 获取文件名
+  const getFileNameFromUrl = (url, defaultExt) => {
+    try {
+      const urlObj = new URL(url, window.location.origin);
+      let pathname = urlObj.pathname;
+      let name = pathname.substring(pathname.lastIndexOf('/') + 1);
+      if (!name || !/\.[a-zA-Z0-9]+$/.test(name)) {
+        // 没有扩展名
+        name = `relax_${Date.now()}.${defaultExt}`;
+      }
+      return decodeURIComponent(name);
+    } catch {
+      return `relax_${Date.now()}.${defaultExt}`;
+    }
+  };
+
   try {
     getRedirectUrlLoadingComputed.value = true;
 
-
-    const response = await fetch(realUrl);
-    if (!response.ok) throw new Error("下载失败");
-    const blob = await response.blob();
-    const arrayBuffer = await blob.arrayBuffer();
-    // 发送 buffer 给主进程保存
-    const result = await window.electron.ipcRenderer.invoke("save-video-buffer", {
-      buffer: Array.from(new Uint8Array(arrayBuffer)),
-    });
-    if (result.success) {
-      message.success("下载成功！");
+    // 视频
+    if (isVideo) {
+      const videoEl = relaxVideoRef.value;
+      if (!videoEl) {
+        message.error("未找到视频元素");
+        return;
+      }
+      realUrl = videoEl.currentSrc;
+      fileName = getFileNameFromUrl(realUrl, "mp4");
+    }
+    // 图片
+    else if (isImg) {
+      realUrl = relaxVideoUrl.value;
+      fileName = getFileNameFromUrl(realUrl, "jpg");
     } else {
-      message.error(result.error);
+      message.error("暂不支持的媒体类型");
+      return;
+    }
+
+    // 判断是否为 Electron 环境
+    const isElectron = !!(window && window.electron && window.electron.ipcRenderer);
+
+    if (isElectron) {
+      // Electron 走原有逻辑
+      const response = await fetch(realUrl);
+      if (!response.ok) throw new Error("下载失败");
+      const blob = await response.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+      // 发送 buffer 给主进程保存
+      const result = await window.electron.ipcRenderer.invoke("save-video-buffer", {
+        buffer: Array.from(new Uint8Array(arrayBuffer)),
+        fileName, // 兼容主进程可选参数
+      });
+      if (result.success) {
+        message.success("下载成功！");
+      } else {
+        message.error(result.error);
+      }
+    } else {
+      // Web 端保存
+      const response = await fetch(realUrl, { mode: "cors" });
+      if (!response.ok) throw new Error("下载失败");
+      const blob = await response.blob();
+      // 创建 a 标签下载
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
+      message.success("下载成功！");
     }
   } catch (e) {
-    message.error(e.message);
+    message.error(e.message || "保存失败");
   } finally {
     getRedirectUrlLoadingComputed.value = false;
   }
