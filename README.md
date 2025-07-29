@@ -19,6 +19,12 @@
 - 🌙 暗色主题支持
 - ⚙️ 高度可配置
 
+## 👀 大致效果
+
+<video width="320" height="240" controls>
+  <source src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/20250729_115416.mp4" type="video/mp4">
+</video>
+
 ## 📦 安装
 
 ```bash
