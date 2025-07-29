@@ -12,17 +12,18 @@
     >
       <div class="relax-video-container">
         <div class="relax-video-title" @click="handleHistory">
-          <span>{{ title }}</span>
+          <a-tooltip title="如果遇到加载不出可以换一个">
+            <span>{{ title }}</span>
+          </a-tooltip>
           <a-tooltip title="历史记录">
             <history-outlined />
           </a-tooltip>
         </div>
-
         <a-divider />
 
         <div class="relax-video">
           <div class="relax-video-content">
-            <template v-if="/\.mp4(\?|$)/i.test(relaxVideoUrl)">
+            <template v-if="isVideoFile(relaxVideoUrl)">
               <video
                 ref="relaxVideoRef"
                 :src="relaxVideoUrl"
@@ -32,7 +33,7 @@
                 controls
               ></video>
             </template>
-            <template v-else-if="/\.(jpg|jpeg|png|gif|webp|bmp)(\?|$)/i.test(relaxVideoUrl)">
+            <template v-else-if="isImageFile(relaxVideoUrl)">
               <div class="img">
                 <a-image
                   :src="relaxVideoUrl"
@@ -114,13 +115,58 @@ const props = defineProps({
 
 const emit = defineEmits(["update:open", "update:getRedirectUrlLoading"]);
 
-// 响应式数据
+const fileType = {
+  video: [
+    'mp4',
+    'avi',
+    'mov',
+    'wmv',
+    'flv',
+    'webm',
+    'mkv',
+    'm4v',
+    '3gp',
+    'ogv'
+  ],
+  imgs: [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp',
+    'bmp',
+    'svg',
+    'ico'
+  ]
+}
+
 const relaxVideoUrl = ref("");
 const relaxVideoRef = ref(null);
 const relaxHistoryOpen = ref(false);
 const relaxHistoryOpenLoading = ref(false);
 
-// 计算属性
+// 判断是否为视频文件
+const isVideoFile = (url) => {
+  if (!url) return false;
+  // 移除查询参数
+  const urlWithoutQuery = url.split('?')[0];
+  // 检查URL中是否包含视频扩展名
+  return fileType.video.some(ext => 
+    urlWithoutQuery.toLowerCase().includes(`.${ext}`)
+  );
+};
+
+// 判断是否为图片文件
+const isImageFile = (url) => {
+  if (!url) return false;
+  // 移除查询参数
+  const urlWithoutQuery = url.split('?')[0];
+  // 检查URL中是否包含图片扩展名
+  return fileType.imgs.some(ext => 
+    urlWithoutQuery.toLowerCase().includes(`.${ext}`)
+  );
+};
+
 const relaxOpenComputed = computed({
   get: () => props.open,
   set: (value) => emit("update:open", value),
@@ -169,6 +215,8 @@ const handleRelaxSave = async () => {
   const realUrl = videoEl.currentSrc;
   try {
     getRedirectUrlLoadingComputed.value = true;
+
+
     const response = await fetch(realUrl);
     if (!response.ok) throw new Error("下载失败");
     const blob = await response.blob();
