@@ -22,14 +22,29 @@
 
         <div class="relax-video">
           <div class="relax-video-content">
-            <video
-              ref="relaxVideoRef"
-              :src="relaxVideoUrl"
-              autoplay
-              muted
-              loop
-              controls
-            ></video>
+            <template v-if="/\.mp4(\?|$)/i.test(relaxVideoUrl)">
+              <video
+                ref="relaxVideoRef"
+                :src="relaxVideoUrl"
+                autoplay
+                muted
+                loop
+                controls
+              ></video>
+            </template>
+            <template v-else-if="/\.(jpg|jpeg|png|gif|webp|bmp)(\?|$)/i.test(relaxVideoUrl)">
+              <div class="img">
+                <a-image
+                  :src="relaxVideoUrl"
+                  alt="放松一下"
+                  fit="contain"
+                  :fallback="imgError"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <div style="text-align:center;color:#aaa;">暂不支持的媒体类型</div>
+            </template>
           </div>
           <div class="relax-video-btns">
             <a-button type="primary" @click="handleRelaxChange">换一个</a-button>
@@ -73,6 +88,9 @@ import { HistoryOutlined } from "@ant-design/icons-vue";
 import {
   createInkRipple
 } from '../utils/inkRipple';
+import {
+  imgError
+} from '../utils/index';
 
 
 const props = defineProps({
@@ -237,9 +255,22 @@ defineExpose({
     height: 90%;
     flex: 1;
 
+    .img,
     video {
       width: 100%;
       height: 100%;
+    }
+
+    .img {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      :deep(.ant-image),
+      :deep(.ant-image-img) {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 
