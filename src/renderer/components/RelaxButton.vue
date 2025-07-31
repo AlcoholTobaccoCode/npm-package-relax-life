@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed, h, shallowRef } from 'vue';
+import { computed, h } from 'vue';
 
 // 同步导入 + 降级 fallback
 let LoadingOutlined;
