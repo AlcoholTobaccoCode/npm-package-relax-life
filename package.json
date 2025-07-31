@@ -40,11 +40,13 @@
   },
   "files": [
     "dist",
+    "example",
     "src/main/relaxManager.js",
     "main.js"
   ],
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "pub": "pnpm build && npm version patch && npm publish"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",
