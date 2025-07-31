@@ -21,9 +21,7 @@
 
 ## 👀 大致效果
 
-<p style="text-align: center;">
-  <img alt="大致效果" title="大致效果" src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/%E5%BD%95%E5%B1%8F2025-07-31_17.22.49.gif" />
-</p>
+![大致效果](https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/%E5%BD%95%E5%B1%8F2025-07-31_17.22.49.gif)
 
 ## 📦 安装
 
