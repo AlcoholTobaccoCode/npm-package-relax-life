@@ -21,9 +21,9 @@
 
 ## 👀 大致效果
 
-<video width="320" height="240" controls>
-  <source src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/20250729_115416.mp4" type="video/mp4">
-</video>
+<p style="text-align: center;">
+  <img alt="大致效果" title="大致效果" src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/20250729_115416.gif">
+</p>
 
 ## 📦 安装
 
