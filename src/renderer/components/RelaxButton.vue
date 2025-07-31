@@ -45,12 +45,6 @@ const props = defineProps({
   fontSize: {
     type: Number,
     default: () => 16
-  },
-  tooltipConfig: {
-    type: Object,
-    default: () => ({
-      isShow: true
-    })
   }
 });
 

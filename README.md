@@ -21,11 +21,9 @@
 
 ## 👀 大致效果
 
-<!-- <p style="text-align: center;">
-  <img alt="大致效果" title="大致效果" src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/20250729_115416.gif" />
-</p> -->
-
-![大致效果](https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/20250729_115416.gif)
+<p style="text-align: center;">
+  <img alt="大致效果" title="大致效果" src="https://halo-qingyun-webside.oss-cn-hangzhou.aliyuncs.com/fileshare-duqs/%E5%BD%95%E5%B1%8F2025-07-31_17.22.49.gif" />
+</p>
 
 ## 📦 安装
 
@@ -184,8 +182,6 @@ const FallbackButton = createFallbackComponent("Button", {
 | getRedirectUrlLoading | Boolean | false                                          | 加载状态          |
 | title                 | String  | "😎 放松一下,劳逸结合"                         | 抽屉标题          |
 | videoApiUrl           | String  | "https://api.yujn.cn/api/zzxjj.php?type=video" | 视频 API 地址     |
-| tooltipConfig         | Object  |                                                | tooltip 配置      |
-| tooltipConfig[isShow] | Boolean | true                                           | 是否显示          |
 
 #### Events
 
